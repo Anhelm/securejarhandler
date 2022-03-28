@@ -55,7 +55,7 @@ public class ModuleClassLoader extends ClassLoader {
                                 .filter(l -> l.configuration() == other.configuration())
                                 .flatMap(layer->Optional.ofNullable(layer.findLoader(other.name())).stream())
                                 .findFirst()
-                                .orElse(ClassLoader.getPlatformClassLoader());
+                                .orElse(ClassLoader.getSystemClassLoader());
                     } else {
                         return ModuleClassLoader.this;
                     }
@@ -238,7 +238,7 @@ public class ModuleClassLoader extends ClassLoader {
                 bytes = loadFromModule(classNameToModuleName(name), (reader, ref)->this.getClassBytes(reader, ref, name));
             } else {
                 var cname = name.replace('.','/')+".class";
-                try (var is = this.parentLoaders.getOrDefault(pname, ClassLoader.getPlatformClassLoader()).getResourceAsStream(cname)) {
+                try (var is = this.parentLoaders.getOrDefault(pname, ClassLoader.getSystemClassLoader()).getResourceAsStream(cname)) {
                     if (is != null)
                         bytes = is.readAllBytes();
                 }
